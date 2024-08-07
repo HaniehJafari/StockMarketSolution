@@ -33,25 +33,24 @@ namespace StockMarketSolution.Controllers
         }
 
 
-        [Route("/")]
-        [Route("[action]")]
-        [Route("~/[controller]")]
-        public async Task<IActionResult> Index()
+        [Route("[action]/{stockSymbol}")]
+        [Route("~/[controller]/{stockSymbol}")]
+        public async Task<IActionResult> Index(string stockSymbol)
         {
             //reset stock symbol if not exists
-            if (string.IsNullOrEmpty(_tradingOptions.DefaultStockSymbol))
-                _tradingOptions.DefaultStockSymbol = "MSFT";
+            if (string.IsNullOrEmpty(stockSymbol))
+                stockSymbol = "MSFT";
 
 
             //get company profile from API server
-            Dictionary<string, object>? companyProfileDictionary = await _finnhubService.GetCompanyProfile(_tradingOptions.DefaultStockSymbol);
+            Dictionary<string, object>? companyProfileDictionary = await _finnhubService.GetCompanyProfile(stockSymbol);
 
             //get stock price quotes from API server
-            Dictionary<string, object>? stockQuoteDictionary = await _finnhubService.GetStockPriceQuote(_tradingOptions.DefaultStockSymbol);
+            Dictionary<string, object>? stockQuoteDictionary = await _finnhubService.GetStockPriceQuote(stockSymbol);
 
 
             //create model object
-            StockTrade stockTrade = new StockTrade() { StockSymbol = _tradingOptions.DefaultStockSymbol };
+            StockTrade stockTrade = new StockTrade() { StockSymbol = stockSymbol };
 
             //load data from finnHubService into model object
             if (companyProfileDictionary != null && stockQuoteDictionary != null)
@@ -133,36 +132,25 @@ namespace StockMarketSolution.Controllers
         }
 
 
-        [Route("[action]")]
-        public async Task<IActionResult> OrdersPDf()
+        [Route("OrdersPDF")]
+        public async Task<IActionResult> OrdersPDF()
         {
-            List<IOrderResponse> orderResponces = new List<IOrderResponse>();
-
-            List<BuyOrderResponse> buyOrdersResponce = await _stocksService.GetBuyOrders();
-            List<SellOrderResponse> sellOrderResponses = await _stocksService.GetSellOrders();
-
-            orderResponces.AddRange(buyOrdersResponce);
-            orderResponces.AddRange(sellOrderResponses);
-
-            orderResponces = orderResponces.OrderByDescending(temp => temp.DateAndTimeOfOrder).ToList();
+            //Get list of orders
+            List<IOrderResponse> orders = new List<IOrderResponse>();
+            orders.AddRange(await _stocksService.GetBuyOrders());
+            orders.AddRange(await _stocksService.GetSellOrders());
+            orders = orders.OrderByDescending(temp => temp.DateAndTimeOfOrder).ToList();
 
             ViewBag.TradingOptions = _tradingOptions;
 
-            return new ViewAsPdf("OrdersPdf", orderResponces, ViewData)
+            //Return view as pdf
+            return new ViewAsPdf("OrdersPDF", orders, ViewData)
             {
-                PageMargins = new Rotativa.AspNetCore.Options.Margins() { Top = 20, Bottom = 20, Left = 20, Right = 20 },
-                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
-
+                PageMargins = new Rotativa.AspNetCore.Options.Margins() { Top = 20, Right = 20, Bottom = 20, Left = 20 },
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape
             };
-
-
-
         }
     }
-
-
 }
-
-
 
 

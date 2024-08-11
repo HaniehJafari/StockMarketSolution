@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Moq;
-using ServiceContracts;
-using Services;
+﻿using AutoFixture;
 using FluentAssertions;
-using AutoFixture;
-using StockMarketSolution;
-using StockMarketSolution.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Moq;
+using ServiceContracts;
+using StockMarketSolution;
+using StockMarketSolution.Controllers;
 using StockMarketSolution.Models;
-
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using static Microsoft.AspNetCore.Razor.Language.TagHelperMetadata;
 
@@ -24,10 +21,11 @@ namespace Tests.ControllerTests
     {
         private readonly IFinnhubService _finnhubService;
         private readonly Mock<IFinnhubService> _finnhubSrviceMock;
+        private readonly Fixture _fixture;
 
         public StocksControllerTest()
         {
-
+            _fixture = new Fixture();
             _finnhubSrviceMock = new Mock<IFinnhubService>();
             _finnhubService = _finnhubSrviceMock.Object;
         }

@@ -34,8 +34,4 @@
     <ProjectReference Include="..\StockMarketSolution\StockMarketSolution.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="IntegrationTests\" />
-  </ItemGroup>
-
 </Project>

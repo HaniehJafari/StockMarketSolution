@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 using Moq;
 using ServiceContracts;
 using StockMarketSolution;
@@ -21,6 +22,7 @@ namespace Tests.ControllerTests
     {
         private readonly IFinnhubService _finnhubService;
         private readonly Mock<IFinnhubService> _finnhubSrviceMock;
+        private readonly Mock<ILogger<StocksController>> _loggerMock;
         private readonly Fixture _fixture;
 
         public StocksControllerTest()
@@ -28,6 +30,8 @@ namespace Tests.ControllerTests
             _fixture = new Fixture();
             _finnhubSrviceMock = new Mock<IFinnhubService>();
             _finnhubService = _finnhubSrviceMock.Object;
+            _loggerMock = new Mock<ILogger<StocksController>>();
+
         }
 
 
@@ -42,7 +46,7 @@ namespace Tests.ControllerTests
                 Top25PopularStocks = "AAPL,MSFT,AMZN,TSLA,GOOGL,GOOG,NVDA,BRK.B,META,UNH,JNJ,JPM,V,PG,XOM,HD,CVX,MA,BAC,ABBV,PFE,AVGO,COST,DIS,KO"
             });
             //Arrange
-            StocksController stocksController = new StocksController(tradingOptions, _finnhubService);
+            StocksController stocksController = new StocksController(tradingOptions, _finnhubService, _loggerMock.Object);
 
 
 

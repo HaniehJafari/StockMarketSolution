@@ -15,6 +15,7 @@ namespace StockMarketSolution.Controllers
         private readonly IStocksService _stocksService;
         private readonly IFinnhubService _finnhubService;
         private readonly IConfiguration _configuration;
+        
 
 
         /// <summary>

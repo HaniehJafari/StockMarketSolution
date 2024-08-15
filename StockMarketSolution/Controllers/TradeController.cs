@@ -3,6 +3,8 @@ using Microsoft.Extensions.Options;
 using Rotativa.AspNetCore;
 using ServiceContracts;
 using ServiceContracts.DTO;
+using StockMarketSolution.Filters;
+using StockMarketSolution.Filters.ActionFilters;
 using StockMarketSolution.Models;
 using System.Text.Json;
 
@@ -15,7 +17,7 @@ namespace StockMarketSolution.Controllers
         private readonly IStocksService _stocksService;
         private readonly IFinnhubService _finnhubService;
         private readonly IConfiguration _configuration;
-        
+
 
 
         /// <summary>
@@ -68,6 +70,7 @@ namespace StockMarketSolution.Controllers
 
         [Route("[action]")]
         [HttpPost]
+        [TypeFilter(typeof(CreateOrderActionFilter))]
         public async Task<IActionResult> BuyOrder(BuyOrderRequest buyOrderRequest)
         {
             //update date of order
@@ -94,6 +97,7 @@ namespace StockMarketSolution.Controllers
 
         [Route("[action]")]
         [HttpPost]
+        [TypeFilter(typeof(CreateOrderActionFilter))]
         public async Task<IActionResult> SellOrder(SellOrderRequest sellOrderRequest)
         {
             //update date of order
